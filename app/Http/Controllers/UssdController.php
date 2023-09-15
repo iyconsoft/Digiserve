@@ -39,7 +39,7 @@ class UssdController extends Controller
 				$menuSession->created_at = date('Y-m-d H:i:s');
 				$menuSession->save();
 							
-				$sendMessage = "Welcome to Borrow Power  USSD Platform".$this->newLine."1. Buy Now".$this->newLine."2. My Purchases";
+				$sendMessage = "Welcome to Vender USSD Platform".$this->newLine."1. Buy Now".$this->newLine."2. My Purchases";
 				
 				$output['operation'] = "continue";		
 				$output['message'] = $sendMessage;
