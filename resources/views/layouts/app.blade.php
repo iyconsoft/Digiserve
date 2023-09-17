@@ -11,7 +11,7 @@
   @if (env('APP_ENV') === 'production')
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
 	@endif
-  <title>Borrow Power - Admin</title>
+  <title>Vender - Admin</title>
   <link rel="icon" href="{{ url('favicon.png') }}">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome-free/css/all.min.css') }}">
@@ -75,7 +75,7 @@
     <a href="#" class="brand-link">
       <!--<img src="{{ URL::asset('/') }}home/favicon.png" alt="eShop Logo" class="brand-image elevation-3"
            style="opacity: .8">-->
-      <span class="brand-text font-weight-light">Borrow Power</span>
+      <span class="brand-text font-weight-light">Vender</span>
     </a>
 
     <!-- Sidebar -->
