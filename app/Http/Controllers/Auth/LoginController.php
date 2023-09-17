@@ -30,7 +30,7 @@ class LoginController extends Controller
         // Attempt to log the user in
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password]))
         {
-			return redirect('/ussd');
+			return redirect('/services');
         }
 
         // if unsuccessful

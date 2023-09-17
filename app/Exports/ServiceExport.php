@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use DB;
 
-class PaymentExport implements FromQuery, WithHeadings
+class ServiceExport implements FromQuery, WithHeadings
 {
 	public $Query;
     /**
@@ -14,18 +14,17 @@ class PaymentExport implements FromQuery, WithHeadings
     */
     public function query()
     {
-		return DB::table(DB::RAW(' ('.$this->Query.') a'))->orderby('msisdn');
+		return DB::table(DB::RAW(' ('.$this->Query.') a'))->orderby('name');
     }
 	
 	public function headings(): array
     {
         return [
-			"Msisdn",
 			"Name",
-			"Local govt",
-			"Amount",
-			"Payment",
-			"Payment Date"
+			"Provider",
+			"Notification Type",
+			"Notification Format",
+			"Options"
         ];
     }
 }

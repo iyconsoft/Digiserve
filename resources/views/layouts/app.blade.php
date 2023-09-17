@@ -89,18 +89,18 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item has-treeview">
-            <a href="{{ url('/ussd') }}" class="nav-link {{ (request()->is('ussd')) ? 'active' : '' }}">
-              <i class="nav-icon fas fa-sms"></i>
+            <a href="{{ url('/services') }}" class="nav-link {{ (request()->is('services')) ? 'active' : '' }}">
+              <i class="nav-icon fas fa-wrench"></i>
               <p>
-                Ussd
+                Services
               </p>
             </a>
           </li>
           <li class="nav-item has-treeview">
-            <a href="{{ url('/payment') }}" class="nav-link {{ (Request::segment(1) === 'payment') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-dollar-sign"></i>
+            <a href="{{ url('/user_services') }}" class="nav-link {{ (request()->is('ussd')) ? 'active' : '' }}">
+              <i class="nav-icon fas fa-users"></i>
               <p>
-                Payment
+                User Services
               </p>
             </a>
           </li>
@@ -193,13 +193,48 @@ $('.daterangepicker2').daterangepicker({
   }
 });
 $('.daterangepicker2').val(""); 
-function downloadURI(uri) 
+function downloadURI(urlToSend, fileName) 
 {
-	var link = document.createElement("a");
-	link.download = "Download";
-	link.href = uri;
-	link.click();
+	var fileName = fileName;
+	var req = new XMLHttpRequest();
+     req.open("GET", urlToSend, true);
+     req.responseType = "blob";
+     req.onload = function (event) {
+         var blob = req.response;
+         var link=document.createElement('a');
+         link.href=window.URL.createObjectURL(blob);
+         link.download=fileName;
+         link.click();
+     };
+
+     req.send();
 }
+$(document).on('click', '#btnDelete[data-remote]', function (e) { 
+	if (confirm('Are you sure to delete?')) {		
+		e.preventDefault();		 
+		var url = '{{ url("/") }}/'+$(this).data('remote');
+		// confirm then
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
+		$.ajax({
+			url: url,
+			type: 'DELETE',
+			dataType: 'json',
+			data: {method: '_DELETE' , submit: true},
+			error: function (result, status, err) {
+				//alert(result.responseText);
+				//alert(status.responseText);
+				//alert(err.Message);
+			},
+		}).always(function (data) {
+			$('#dataTable').DataTable().draw(false);
+		});
+	}
+	return false;
+});
 </script>
 </body>
 </html>

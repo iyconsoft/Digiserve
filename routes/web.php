@@ -23,13 +23,18 @@ Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::group(['middleware' => ['auth']], function() {
 	
-	Route::get('ussd/export', 'HomeController@ussdDownload');
-	Route::get('ussd/grid', 'HomeController@ussdGrid');
-	Route::get('ussd', 'HomeController@ussd');
+	Route::delete('services/delete/{service}', 'ServiceController@delete');
+	Route::post('services/update/{service}', 'ServiceController@update');
+	Route::post('services/store', 'ServiceController@store');
+	Route::get('services/edit/{service}', 'ServiceController@edit');
+	Route::get('services/create', 'ServiceController@create');
+	Route::get('services/export', 'ServiceController@Download');
+	Route::get('services/grid', 'ServiceController@Grid');
+	Route::get('services', 'ServiceController@index');
 	
-	Route::get('payment/export', 'HomeController@paymentDownload');
-	Route::get('payment/grid', 'HomeController@paymentGrid');
-	Route::get('payment', 'HomeController@payment');
+	Route::get('user_services/export', 'HomeController@userServicesDownload');
+	Route::get('user_services/grid', 'HomeController@userServicesGrid');
+	Route::get('user_services', 'HomeController@userServices');
 	 
 	
 });

@@ -561,13 +561,74 @@ class UssdController extends Controller
 			$decodeData = $decodeData->eventData;
 		}
 		\Log::info('MonnifyCallback: '.$json);
-			
-		$info_UssdUser = UssdUser::Where('payment_reference', $decodeData->paymentReference)->First();
-		$info_UssdUser->is_paid = "1";
-		$info_UssdUser->payment_date = date("Y-m-d H:i:s");
-		$info_UssdUser->Save();
 		
-		$sendMessage = "Thank you ".$info_UssdUser->name." for your contribution towards rescuing our state. Together a new Kogi is possible.".$this->newLine."From: Alh. Murtala Yakubu Ajaka (MURI)";
+		
+		$account_no = $decodeData->product->reference;
+		$info_UserService = UserService::Where('account_no',$account_no)->First();
+		
+		$info_Payment = new Payment;
+		$info_Payment->user_service_id = $info_UserService->id;
+		$info_Payment->payment_reference = $decodeData->paymentReference;
+		$info_Payment->amount = $decodeData->amountPaid;
+		$info_Payment->is_paid = '1';
+		$info_Payment->service_delivered = date('Y-m-d H:i:s');
+		$info_Payment->Saave();
+		 
+		$merchantReferenceNumber = $decodeData->paymentReference;
+		$amount = $decodeData->amountPaid;
+		$merchantAccount = $account_no;
+		$referenceNumber = info_UserService->meter_no;
+		$merchantService = $info_UserService->service;
+		$hashkey = 'c198c27d34f5400d9b06ee60e5ef6baebdd74323804c4726a5f6276e0f4420fbf871689cd51347c7a8e7ee30157d617c1d7c9f498d0f4bc1b21425eb1eaa88cf
+';
+		//PAGA
+		$data = '{
+			"merchantReferenceNumber": "'.$merchantReferenceNumber.'",
+			"amount": '.$amount.',
+			"merchantAccount": "'.$merchantAccount.'",
+			"referenceNumber": "'.$referenceNumber.'",
+			"currency": "NGN",
+			"merchantService": [
+				"'.$merchantService.'"
+			],
+			"locale": "NG"
+		}';
+		\Log::info('PAGA Payload: '.$data);
+		
+		
+		$hashed = hash("sha512", $referenceNumber + $amount + $merchantAccount + $merchantReferenceNumber + $hashkey);
+		
+		
+		$db_payment->ibris_request_dump = $data;
+		$db_payment->save();
+		
+		$curl = curl_init();
+		curl_setopt_array($curl, array(
+		//CURLOPT_URL => 'http://ics3staging.abiairs.gov.ng/assessment-api/api/vendor/payment/validation', //Test
+		CURLOPT_URL => 'https://www.abiairs.gov.ng/assessment-api/api/vendor/payment/notification', //Live
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_ENCODING => "",
+		CURLOPT_MAXREDIRS => 10,
+		CURLOPT_TIMEOUT => 0,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		CURLOPT_CUSTOMREQUEST => "POST",
+		CURLOPT_POSTFIELDS => $data,
+		CURLOPT_HTTPHEADER => array(
+				"principal:0CA31F18-1F98-49CF-A82B-5826102165FA",
+				"credentials:fK4#cg@WDN*eMfM",
+				"Content-Type:application/json",
+				"hash:" . $hashed
+			),
+		));
+		$response = curl_exec($curl);
+		\Log::info('PAGA Response: '.$response);
+		curl_close($curl);
+		
+		
+		$sendMessage = "Your payment was successful, you have received  N".$decodeData->amountPaid." worth of unit for Meter ".$info_UserService->meter_no."
+".$info_UserService->option." Prepaid Meter Token: ".$info_UserService->meter_no."
+Payment Ref: ".$decodeData->paymentReference;
 		
 		if(env('APP_ENV')=="production")
 		{

@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use DB;
 
-class UssdExport implements FromQuery, WithHeadings
+class UserServiceExport implements FromQuery, WithHeadings
 {
 	public $Query;
     /**
@@ -22,11 +22,18 @@ class UssdExport implements FromQuery, WithHeadings
         return [
 			"Msisdn",
 			"Name",
-			"Local govt",
-			"Problem",
-			"Priorty project",
-			"Pledged",
-			"Creation Date"
+			"Service",
+			"Service Option",
+			"Meter No",
+			"Account No",
+			"Bank",
+			"Payment Reference",
+			"Amount",
+			"Notification Type",
+			"Last Notification",
+			"Next Notification",
+			"Notificaton Message",
+			"Created Date"
         ];
     }
 }

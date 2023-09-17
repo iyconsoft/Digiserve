@@ -3,7 +3,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">USSD</h1>
+        <h1 class="m-0 text-dark">User Services</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         
@@ -30,14 +30,6 @@
                          <input type="text" class="form-control" name="msisdn" id="msisdn"   />
                       </div>
                       <div class="col-md-3">
-                         <label for="charge_type">Problem:</label>
-                         <input type="text" class="form-control" name="problem" id="problem"   />
-                      </div>
-                      <div class="col-md-3">
-                         <label for="charge_type">Project:</label>
-                         <input type="text" class="form-control" name="priorty_project" id="priorty_project"   />
-                      </div>
-                      <div class="col-md-3">
                          <label for="charge_type">Create date:</label>
                          <input type="text" class="form-control daterangepicker2" name="create_date" id="create_date"   />
                       </div>
@@ -59,11 +51,18 @@
                    <tr>
                     <th>Msisdn</th>
                     <th>Name</th>
-                    <th>Local govt</th>
-                    <th>Problem</th>
-                    <th>Priorty project</th>
-                    <th>Pledged</th>
-                    <th>Creation Date</th>
+                    <th>Service</th>
+                    <th>Service Option</th>
+                    <th>Meter No</th>
+                    <th>Account No</th>
+                    <th>Bank</th>
+                    <th>Payment Reference</th>
+                    <th>Amount</th>
+                    <th>Notification Type</th>
+                    <th>Last Notification</th>
+                    <th>Next Notification</th>
+                    <th>Notificaton Message</th>
+                    <th>Created Date</th>
                    </tr>
                 </thead>
                 <tbody>
@@ -88,7 +87,7 @@ var table = $('#dataTable').DataTable({
 	"processing": true,
 	"serverSide": true,
 	"ajax": {
-		url: '{{url('ussd/grid')}}',
+		url: '{{url('user_services/grid')}}',
 		type:'GET',
 		  'headers': {
 			  'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -97,10 +96,17 @@ var table = $('#dataTable').DataTable({
 	"columns": [
 		{ data: 'msisdn' },
 		{ data: 'name' },
-		{ data: 'local_area' },
-		{ data: 'problem' },
-		{ data: 'priorty_project' },
+		{ data: 'service' },
+		{ data: 'service_option' },
+		{ data: 'meter_no' },
+		{ data: 'account_no' },
+		{ data: 'bank' },
+		{ data: 'payment_reference' },
 		{ data: 'amount' },
+		{ data: 'notification_type' },
+		{ data: 'last_notification' },
+		{ data: 'next_notification' },
+		{ data: 'notificaton_message' },
 		{ data: 'created_at' },
 	],
 	language : {"zeroRecords": "&nbsp;"},
@@ -111,8 +117,6 @@ var table = $('#dataTable').DataTable({
 $('.searchBtn').on('click', function (e) { 
 	
 	var msisdn = $("#msisdn").val();
-	var problem = $("#problem").val();
-	var priorty_project = $("#priorty_project").val();
 	var start_create_date = "";
 	var end_create_date = "";
 	if($('#create_date').val() != "")
@@ -120,21 +124,19 @@ $('.searchBtn').on('click', function (e) {
 		start_create_date = $('#create_date').data('daterangepicker').startDate.format('YYYY-MM-DD');
 		end_create_date = $('#create_date').data('daterangepicker').endDate.format('YYYY-MM-DD');
 	}
-	$('#dataTable').DataTable().ajax.url( "{{url('ussd/grid')}}/?searchItem=true&msisdn="+msisdn+"&problem="+problem+"&priorty_project="+priorty_project+"&start_create_date="+start_create_date+"&end_create_date="+end_create_date).load();
+	$('#dataTable').DataTable().ajax.url( "{{url('user_services/grid')}}/?searchItem=true&msisdn="+msisdn+"&start_create_date="+start_create_date+"&end_create_date="+end_create_date).load();
 
 });
 
  
 $('.clearBtn').on('click', function (e) { 
-	$('#dataTable').DataTable().ajax.url( "{{url('ussd/grid')}}/").load();
+	$('#dataTable').DataTable().ajax.url( "{{url('user_services/grid')}}/").load();
 	$('#searchForm')[0].reset();
 	$('#advanceSearchForm')[0].reset();
 });
 
 $(document).on('click', '#Export', function (e) { 
 	var msisdn = $("#msisdn").val();
-	var problem = $("#problem").val();
-	var priorty_project = $("#priorty_project").val();
 	var start_create_date = "";
 	var end_create_date = "";
 	if($('#create_date').val() != "")
@@ -143,9 +145,9 @@ $(document).on('click', '#Export', function (e) {
 		end_create_date = $('#create_date').data('daterangepicker').endDate.format('YYYY-MM-DD');
 	}
 	
-	var URL = "{{url('ussd/export')}}/??searchItem=true&msisdn="+msisdn+"&problem="+problem+"&priorty_project="+priorty_project+"&start_create_date="+start_create_date+"&end_create_date="+end_create_date;
+	var URL = "{{url('user_services/export')}}/?searchItem=true&msisdn="+msisdn+"&start_create_date="+start_create_date+"&end_create_date="+end_create_date;
 	
-	downloadURI(URL);
+	downloadURI(URL, "User Services");
 });
  
 
