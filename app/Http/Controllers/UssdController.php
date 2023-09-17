@@ -486,11 +486,11 @@ class UssdController extends Controller
 		$url = "https://api.monnify.com/api/v1/bank-transfer/reserved-accounts";
 		$login_url = "https://api.monnify.com/api/v1/auth/login";
 		
-		$incomeSplitconfig[] = array ("subAccountCode" => "MFY_SUB_529328264055", "feePercentage"=> 100, "splitPercentage"=> 100, "feeBearer"=> true);
+		$incomeSplitconfig[] = array ("subAccountCode" => "MFY_SUB_297755232263", "feePercentage"=> 100, "splitPercentage"=> 100, "feeBearer"=> true);
 
-		$username = 'MK_PROD_QAC28QUESH';
-		$password = 'QNZXRQPRRZ4ATFWQZYBEE2QUU7QXRF3G';
-		$contractCode = "768651769665";
+		$username = 'MK_PROD_KVWB6PZPLS';
+		$password = 'S39TDFPVHUQGH6PWV4A287KLVUZJYVK4';
+		$contractCode = "881254378615";
 		
 		$data = json_encode(array("accountReference" => $uniqeID, "accountName"  => $info_UserAccount->name."-".$info_UserAccount->service."-".$info_UserAccount->service_option, 
 		"currencyCode" => "NGN", "contractCode" => $contractCode, 
