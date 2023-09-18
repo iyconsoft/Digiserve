@@ -41,6 +41,18 @@
                   <option {{ $isEdit ? ($info_Service->notification_type == 3 ? 'selected' : '') : '' }}  value="3">Montly</option>
                   </select>
                </div>
+               
+               <div class="form-group">
+               <label class="text-left">Active</label>
+               <div class="input-group afield col-sm-8 col-xs-12 ">
+                  <div class="icheck-primary d-inline">
+                     <input type="checkbox" name="status" id="status" {{ $isEdit ? ($info_Service->status == 1 ? 'checked' : '') : 'checked' }} />
+                     <label for="status">
+                     </label>
+                  </div>
+               </div>
+              </div>
+               
             </div>
             <div class="col-md-6">
                <div class="form-group">

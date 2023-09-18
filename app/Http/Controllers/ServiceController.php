@@ -32,7 +32,12 @@ CASE
 	when notification_type=1 THEN 'Weekly' 
 	when notification_type=2 THEN 'Biweekly' 
 	when notification_type=3 THEN 'Montly' 
-END as 'notification_type', format,
+END as 'notification_type', 
+CASE 
+	when status=1 THEN 'Active' 
+	when status=0 THEN 'Inactive' 
+END as 'status',
+format,
 (select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options
 FROM services
 			where ".$Where;
@@ -79,7 +84,12 @@ CASE
 	when notification_type=1 THEN 'Weekly' 
 	when notification_type=2 THEN 'Biweekly' 
 	when notification_type=3 THEN 'Montly' 
-END as 'notification_type', format,
+END as 'notification_type', 
+CASE 
+	when status=1 THEN 'Active' 
+	when status=0 THEN 'Inactive' 
+END as 'status',
+format,
 (select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options
 FROM services
 			where ".$Where;
@@ -128,6 +138,7 @@ FROM services
 		$db_Service->provider = $request->provider;
 		$db_Service->notification_type = $request->notification_type;
 		$db_Service->format = $request->format;
+		$db_Service->status = (isset($request->status) ? '1' : '0');
 		$db_Service->save();
 		
 		$db_Service->Option()->Sync($request->options);
@@ -152,6 +163,7 @@ FROM services
 		$service->provider = $request->provider;
 		$service->notification_type = $request->notification_type;
 		$service->format = $request->format;
+		$service->status = (isset($request->status) ? '1' : '0');
 		$service->save();
 		
 		$service->Option()->Sync($request->options);

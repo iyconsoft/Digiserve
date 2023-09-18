@@ -51,6 +51,7 @@
                     <th>Notification Type</th>
                     <th>Notification Format</th>
                     <th>Options</th>
+                    <th>Status</th>
                     <th>Action</th>
                    </tr>
                 </thead>
@@ -88,6 +89,7 @@ var table = $('#dataTable').DataTable({
 		{ data: 'notification_type' },
 		{ data: 'format' },
 		{ data: 'options' },
+		{ data: 'status' },
 		{ data: 'action' },
 	],
 	language : {"zeroRecords": "&nbsp;"},

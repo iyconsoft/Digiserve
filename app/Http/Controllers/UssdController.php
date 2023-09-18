@@ -393,12 +393,12 @@ class UssdController extends Controller
 	
 	function getServices()
 	{
-		return Service::All();
+		return Service::Where('status','1')->Get();
 	}
 	function getSelectedService($rowno)
 	{
 		$i=1;
-		foreach(Service::All() as $Service)
+		foreach(Service::Where('status','1')->Get() as $Service)
 		{
 			if($rowno == $i)
 			{
@@ -577,7 +577,7 @@ class UssdController extends Controller
 		$merchantReferenceNumber = $decodeData->paymentReference;
 		$amount = $decodeData->amountPaid;
 		$merchantAccount = $account_no;
-		$referenceNumber = info_UserService->meter_no;
+		$referenceNumber = $info_UserService->meter_no;
 		$merchantService = $info_UserService->service;
 		$hashkey = 'c198c27d34f5400d9b06ee60e5ef6baebdd74323804c4726a5f6276e0f4420fbf871689cd51347c7a8e7ee30157d617c1d7c9f498d0f4bc1b21425eb1eaa88cf
 ';

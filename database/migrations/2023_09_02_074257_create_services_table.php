@@ -19,6 +19,7 @@ class CreateServicesTable extends Migration
 			$table->string('provider');
 			$table->char('notification_type',1);
 			$table->string('format');
+			$table->char('status',1);
             $table->timestamps();
         });
     }
