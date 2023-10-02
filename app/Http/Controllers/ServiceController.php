@@ -26,8 +26,13 @@ class ServiceController extends Controller
 			{
 				$Where .= ' and services.name like "%'.$request->name.'%"';
 			}
+			if(isset($request->provider) && $request->provider != "")
+			{
+				$Where .= ' and services.provider like "%'.$request->provider.'%"';
+			}
 			
-			$Query = "SELECT name, provider, 
+			$Query = "SELECT provider, name,
+(select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options,
 CASE 
 	when notification_type=1 THEN 'Weekly' 
 	when notification_type=2 THEN 'Biweekly' 
@@ -37,8 +42,7 @@ CASE
 	when status=1 THEN 'Active' 
 	when status=0 THEN 'Inactive' 
 END as 'status',
-format,
-(select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options
+format, fee
 FROM services
 			where ".$Where;
 
@@ -78,8 +82,12 @@ FROM services
 			{
 				$Where .= ' and services.name like "%'.$request->name.'%"';
 			}
-			
-			$Query = "SELECT id, name, provider, 
+			if(isset($request->provider) && $request->provider != "")
+			{
+				$Where .= ' and services.provider like "%'.$request->provider.'%"';
+			}
+			$Query = "SELECT id, provider, name,
+(select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options,
 CASE 
 	when notification_type=1 THEN 'Weekly' 
 	when notification_type=2 THEN 'Biweekly' 
@@ -89,8 +97,7 @@ CASE
 	when status=1 THEN 'Active' 
 	when status=0 THEN 'Inactive' 
 END as 'status',
-format,
-(select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options
+format, fee
 FROM services
 			where ".$Where;
 			
@@ -137,6 +144,7 @@ FROM services
 		$db_Service->name = $request->name;
 		$db_Service->provider = $request->provider;
 		$db_Service->notification_type = $request->notification_type;
+		$db_Service->fee = $request->fee;
 		$db_Service->format = $request->format;
 		$db_Service->status = (isset($request->status) ? '1' : '0');
 		$db_Service->save();
@@ -162,6 +170,7 @@ FROM services
 		$service->name = $request->name;
 		$service->provider = $request->provider;
 		$service->notification_type = $request->notification_type;
+		$db_Service->fee = $request->fee;
 		$service->format = $request->format;
 		$service->status = (isset($request->status) ? '1' : '0');
 		$service->save();

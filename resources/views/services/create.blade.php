@@ -26,12 +26,15 @@
          <div class="row">
             <div class="col-md-6">
                <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="Name" required value="{{ old('name') ?? ($info_Service->name ?? '') }}">
+                  <label for="provider">Service Provider</label>
+                  <select id="provider" name="provider" class="form-control">
+                  	<option {{ $isEdit ?? ($info_Service->name=="PAGA" ? 'selected' : '') }} value="PAGA">PAGA</option>
+                    <option {{ $isEdit ?? ($info_Service->name=="IRECHARGE" ? 'selected' : '') }} value="IRECHARGE">IRECHARGE</option>
+                  </select>
                </div>
                <div class="form-group">
-                  <label for="provider">Provider</label>
-                  <input type="text" class="form-control" id="provider" name="provider" placeholder="Provider" required value="{{ old('provider') ?? ($info_Service->provider ?? '') }}">
+                  <label for="name">Service Name</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Name" required value="{{ old('name') ?? ($info_Service->name ?? '') }}">
                </div>
                <div class="form-group">
                   <label for="notification_type">Notification Type</label>
@@ -41,7 +44,6 @@
                   <option {{ $isEdit ? ($info_Service->notification_type == 3 ? 'selected' : '') : '' }}  value="3">Montly</option>
                   </select>
                </div>
-               
                <div class="form-group">
                <label class="text-left">Active</label>
                <div class="input-group afield col-sm-8 col-xs-12 ">
@@ -56,11 +58,11 @@
             </div>
             <div class="col-md-6">
                <div class="form-group">
-                  <label for="provider">Notification Format</label>
-                  <input type="text" class="form-control" id="format" name="format" placeholder="Notification Format" required value="{{ old('format') ?? ($info_Service->format ?? '') }}">
+                  <label for="provider">Fee</label>
+                  <input type="number" step="0.01" class="form-control" id="fee" name="fee" placeholder="Fee" required value="{{ old('fee') ?? ($info_Service->fee ?? '') }}">
                </div>
                <div class="form-group">
-                  <label for="options">Options</label>
+                  <label for="options">Service Options</label>
                   <select class="form-control select2" multiple="multiple" id="options" name="options[]" required>
                      @foreach(App\Models\Option::ALL() as $Option)
                      @if($isEdit)
@@ -70,6 +72,10 @@
                      @endif
                      @endforeach
                   </select>
+               </div>
+               <div class="form-group">
+                  <label for="provider">Notification Format</label>
+                  <input type="text" class="form-control" id="format" name="format" placeholder="Notification Format" required value="{{ old('format') ?? ($info_Service->format ?? '') }}">
                </div>
             </div>
          </div>

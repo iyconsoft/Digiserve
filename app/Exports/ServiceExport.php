@@ -20,11 +20,13 @@ class ServiceExport implements FromQuery, WithHeadings
 	public function headings(): array
     {
         return [
-			"Name",
-			"Provider",
+			"Service Provider",
+			"Service Name",
+			"Service Options",
 			"Notification Type",
+			"Status",
 			"Notification Format",
-			"Options"
+			"Fee",
         ];
     }
 }

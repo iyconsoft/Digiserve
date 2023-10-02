@@ -18,7 +18,7 @@
     <div class="card-body">
     	 <div class="row">
            <div class="col-md-12 m-2" style="text-align: right;">  
-           	<a href="{{ url('services/create') }}" class="btn btn-default" id="Export">New</a>
+           	<a href="{{ url('services/create') }}" class="btn btn-default">New</a>
             <Button class="btn btn-default" id="Export">Export</Button>
            </div>
     	 </div>
@@ -27,7 +27,14 @@
                 <form id="searchForm" action="#">
                    <div class="row">
                       <div class="col-md-3">
-                         <label for="charge_type">Name:</label>
+                         <label for="charge_type">Service Provider:</label>
+                         <select id="provider" name="provider" class="form-control">
+                            <option value="PAGA">PAGA</option>
+                            <option value="IRECHARGE">IRECHARGE</option>
+                          </select>
+                      </div>
+                      <div class="col-md-3">
+                         <label for="charge_type">Service Name:</label>
                          <input type="text" class="form-control" name="name" id="name"   />
                       </div>
                       <div class="col-md-3"><label for="charge_type">&nbsp;</label><br />
@@ -46,11 +53,12 @@
              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                    <tr>
-                    <th>Name</th>
-                    <th>Provider</th>
+                    <th>Service Provider</th>
+                    <th>Service Name</th>
+                    <th>Service Options</th>
                     <th>Notification Type</th>
                     <th>Notification Format</th>
-                    <th>Options</th>
+                    <th>Fee</th>
                     <th>Status</th>
                     <th>Action</th>
                    </tr>
@@ -84,11 +92,12 @@ var table = $('#dataTable').DataTable({
 		  },
 	},
 	"columns": [
-		{ data: 'name' },
 		{ data: 'provider' },
+		{ data: 'name' },
+		{ data: 'options' },
 		{ data: 'notification_type' },
 		{ data: 'format' },
-		{ data: 'options' },
+		{ data: 'fee' },
 		{ data: 'status' },
 		{ data: 'action' },
 	],
@@ -100,7 +109,8 @@ var table = $('#dataTable').DataTable({
 $('.searchBtn').on('click', function (e) { 
 	
 	var name = $("#name").val();
-	$('#dataTable').DataTable().ajax.url( "{{url('services/grid')}}/?searchItem=true&name="+name).load();
+	var provider = $("#provider").val();
+	$('#dataTable').DataTable().ajax.url( "{{url('services/grid')}}/?searchItem=true&name="+name+"&provider="+provider).load();
 
 });
 
@@ -113,7 +123,8 @@ $('.clearBtn').on('click', function (e) {
 
 $(document).on('click', '#Export', function (e) { 
 	var name = $("#name").val();
-	var URL = "{{url('services/export')}}/??searchItem=true&name="+name;
+	var provider = $("#provider").val();
+	var URL = "{{url('services/export')}}/?searchItem=true&name="+name+"&provider="+provider;
 	
 	downloadURI(URL, "Services");
 });

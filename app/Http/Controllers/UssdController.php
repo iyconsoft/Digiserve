@@ -41,8 +41,8 @@ class UssdController extends Controller
 							
 				$sendMessage = "Welcome to Vender USSD Platform".$this->newLine."1. Buy Now".$this->newLine."2. My Purchases";
 				
-				$output['operation'] = "continue";		
-				$output['message'] = $sendMessage;
+				$output['session_operation'] = "continue";		
+				$output['session_msg'] = $sendMessage;
 				
 				return $output;
 			}
@@ -63,8 +63,8 @@ class UssdController extends Controller
 								$line++;
 							}
 							
-							$output['operation'] = "continue";		
-							$output['message'] = $sendMessage;
+							$output['session_operation'] = "continue";		
+							$output['session_msg'] = $sendMessage;
 							
 							$menuSession->keyword = $message;
 							$menuSession->g_parent = $message;
@@ -76,8 +76,8 @@ class UssdController extends Controller
 							$info_Payments = $this->getPayments($msisdn);
 							if($info_Payments->Count() === 0)
 							{
-								$output['operation'] = "end";		
-								$output['message'] = "No payment found";
+								$output['session_operation'] = "end";		
+								$output['session_msg'] = "No payment found";
 								$menuSession->delete();
 							}
 							else
@@ -89,8 +89,8 @@ class UssdController extends Controller
 									$sendMessage = $sendMessage.$this->newLine. $line . ". ".$info_Payment->service;
 									$line++;
 								}
-								$output['operation'] = "continue";		
-								$output['message'] = $sendMessage;
+								$output['session_operation'] = "continue";		
+								$output['session_msg'] = $sendMessage;
 								$menuSession->keyword = $message;
 								$menuSession->g_parent = $message;
 								$menuSession->level = 2;
@@ -128,8 +128,8 @@ class UssdController extends Controller
 								$menuSession->create_new_account_id = $line;
 							}
 							
-							$output['operation'] = "continue";		
-							$output['message'] = $sendMessage;
+							$output['session_operation'] = "continue";		
+							$output['session_msg'] = $sendMessage;
 							
 							
 							$menuSession->service_id = $info_SelectedService->id;
@@ -143,8 +143,8 @@ class UssdController extends Controller
 						{
 							$info_SelectedPayment = $this->getSelectedPayments($msisdn,$message);
 							
-							$output['operation'] = "end";		
-							$output['message'] = "Date: ".$info_SelectedPayment->created_at->format('d/M/Y')."".$this->newLine."".$info_SelectedPayment->service_option." Prepaid Meter Token: ".$info_SelectedPayment->meter_no."".$this->newLine."Payment Ref: ".$info_SelectedPayment->payment_reference."";
+							$output['session_operation'] = "end";		
+							$output['session_msg'] = "Date: ".$info_SelectedPayment->created_at->format('d/M/Y')."".$this->newLine."".$info_SelectedPayment->service_option." Prepaid Meter Token: ".$info_SelectedPayment->meter_no."".$this->newLine."Payment Ref: ".$info_SelectedPayment->payment_reference."";
 							
 							$menuSession->delete();
 
@@ -191,8 +191,8 @@ class UssdController extends Controller
 								}
 							}
 							
-							$output['operation'] = "continue";		
-							$output['message'] = $sendMessage;
+							$output['session_operation'] = "continue";		
+							$output['session_msg'] = $sendMessage;
 							
 							
 						}
@@ -212,7 +212,7 @@ class UssdController extends Controller
 								 
 								$menuSession->option = $info_ServiceOption->name;
 								
-								$output['operation'] = "continue";
+								$output['session_operation'] = "continue";
 							}
 							else
 							{
@@ -224,8 +224,8 @@ class UssdController extends Controller
 								$menuSession->amount = $message;
 							}
 							
-							$output['operation'] = "continue";		
-							$output['message'] = $sendMessage;
+							$output['session_operation'] = "continue";		
+							$output['session_msg'] = $sendMessage;
 							
 							$menuSession->keyword = $message;
 							$menuSession->level = 5;
@@ -246,7 +246,7 @@ class UssdController extends Controller
 								
 								$menuSession->meter_no = $message;
 								
-								$output['operation'] = "continue";
+								$output['session_operation'] = "continue";
 								$menuSession->keyword = $message;
 								$menuSession->level = 6;
 								$menuSession->save();
@@ -260,10 +260,10 @@ class UssdController extends Controller
 	Call 0908811212 for any issues";
 								$this->sendSMS($msisdn,$sendSMSMessage);
 								$sendMessage = "Thanks, you will receive SMS Instruction on payment shortly";
-								$output['operation'] = "end";
+								$output['session_operation'] = "end";
 								$menuSession->delete();
 							}
-							$output['message'] = $sendMessage;
+							$output['session_msg'] = $sendMessage;
 						}
 						else //2. My Purchases
 						{
@@ -332,7 +332,7 @@ class UssdController extends Controller
 								$menuSession->amount = $message;
 								$menuSession->user_account_id = $info_UserAccount->id;
 								
-								$output['operation'] = "continue";
+								$output['session_operation'] = "continue";
 							}
 							else
 							{
@@ -340,7 +340,7 @@ class UssdController extends Controller
 							}
 							
 									
-							$output['message'] = $sendMessage;
+							$output['session_msg'] = $sendMessage;
 							
 							$menuSession->keyword = $message;
 							$menuSession->level = 7;
@@ -364,14 +364,14 @@ class UssdController extends Controller
 	Call 0908811212 for any issues";
 								$this->sendSMS($msisdn,$sendSMSMessage);
 								$sendMessage = "Thanks, you will receive SMS Instruction on payment shortly";
-								$output['operation'] = "end";
+								$output['session_operation'] = "end";
 								$menuSession->delete();
 							}
 							else //2. My Purchases
 							{
 								//End
 							}	
-							$output['message'] = $sendMessage;
+							$output['session_msg'] = $sendMessage;
 						}
 						else
 						{
@@ -383,11 +383,12 @@ class UssdController extends Controller
 		}
 		//catch(\Exception $e)
 		//{
-		//	$output['message'] = 'Invalid reply';
-		//	$output['operation'] = "end";
+		//	$output['session_msg'] = 'Invalid reply';
+		//	$output['session_operation'] = "end";
 		//	if($menuSession)
 		//		$menuSession->delete();
 		//}
+		\Log::info('Response Message: '.$output['session_msg']);
 		return $output;
 	}
 	
