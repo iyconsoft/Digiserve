@@ -23,7 +23,8 @@ class CreateUserServicesTable extends Migration
 			$table->string('account_no')->nullable();
 			$table->string('bank')->nullable();
 			$table->string('payment_reference')->nullable();
-			$table->float('amount');
+			$table->float('amount')->nullable();
+			$table->float('fee')->nullable();
 			$table->char('notification_type',1);
 			$table->datetime('last_notification');
 			$table->datetime('next_notification');

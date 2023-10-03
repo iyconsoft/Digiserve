@@ -16,6 +16,7 @@ class UssdController extends Controller
 	
     public function index(Request $request)
 	{
+		
 		//try
 		{
 			$msisdn = substr($request->msisdn,-13);
@@ -132,7 +133,7 @@ class UssdController extends Controller
 							$output['session_msg'] = $sendMessage;
 							
 							
-							$menuSession->service_id = $info_SelectedService->id;
+							//$menuSession->service_id = $info_SelectedService->id;
 							$menuSession->service = $info_SelectedService->name;
 							$menuSession->is_new = $is_new;
 							$menuSession->keyword = $message;
@@ -156,12 +157,12 @@ class UssdController extends Controller
 						{
 							if($menuSession->is_new == "1")
 							{
-								$info_ServiceOptions = $this->getServiceOptions($menuSession->service_id);
+								$info_ServiceOptions = $this->getServiceOptions($menuSession->service);
 								$sendMessage = "Select ";
 								$line = 1;
 								foreach($info_ServiceOptions as $info_ServiceOption)
 								{
-									$sendMessage = $sendMessage.$this->newLine. $line . ". ".$info_ServiceOption->name;
+									$sendMessage = $sendMessage.$this->newLine. $line . ". ".$info_ServiceOption->Option()->First()->name;
 									$line++;
 								}
 								$menuSession->name = $message;
@@ -207,10 +208,11 @@ class UssdController extends Controller
 						{
 							if($menuSession->is_new == "1")
 							{
-								$info_ServiceOption = $this->getSelectedServiceOptions($menuSession->service_id, $message);
+								$info_ServiceOption = $this->getSelectedServiceOptions($menuSession->service, $message);
 								$sendMessage = "Please enter your METER number";
 								 
-								$menuSession->option = $info_ServiceOption->name;
+								$menuSession->service_id = $info_ServiceOption->id;
+								$menuSession->option = $info_ServiceOption->Option()->First()->name;
 								
 								$output['session_operation'] = "continue";
 							}
@@ -277,10 +279,10 @@ class UssdController extends Controller
 							if($menuSession->is_new == "1")
 							{
 								$info_UserAccount = UserService::Where('msisdn',$menuSession->msisdn)->Where('service',$menuSession->service)->Where('service_option',$menuSession->option)->First();
-								
 								if(!$info_UserAccount)
 								{
 									$info_Service = Service::FindOrFail($menuSession->service_id);
+									 
 									if($info_Service->notification_type == "1")
 									{
 										$next_notification = date('Y-m-d H:i:s',strtotime("+7 days", strtotime(date('Y-m-d H:i:s'))));
@@ -306,7 +308,8 @@ class UssdController extends Controller
 									$info_UserAccount->last_notification = date('Y-m-d H:i:s');
 									$info_UserAccount->next_notification = $next_notification;
 									$info_UserAccount->notificaton_message = $menuSession->msisdn;
-									$info_UserAccount->amount = $message;
+									$info_UserAccount->amount = $info_Service->fee;
+									$info_UserAccount->fee = $message;
 									$info_UserAccount->Save();
 									
 									
@@ -394,12 +397,12 @@ class UssdController extends Controller
 	
 	function getServices()
 	{
-		return Service::Where('status','1')->Get();
+		return Service::SelectRAW('Distinct name')->Where('status','1')->Orderby('name')->Get();
 	}
 	function getSelectedService($rowno)
 	{
 		$i=1;
-		foreach(Service::Where('status','1')->Get() as $Service)
+		foreach(Service::SelectRAW('Distinct name')->Where('status','1')->Orderby('name')->Get() as $Service)
 		{
 			if($rowno == $i)
 			{
@@ -411,14 +414,14 @@ class UssdController extends Controller
 	
 	function getServiceOptions($service)
 	{
-		$info_Service = Service::FindOrFail($service);
-		return $info_Service->Option()->Get();		
+		$info_Service = Service::Where('name', $service)->Get();
+		return $info_Service;		
 	}
 	function getSelectedServiceOptions($service, $rowno)
 	{
-		$info_Service = Service::FindOrFail($service);
+		$info_Service = Service::Where('name', $service)->Get();
 		$i=1;
-		foreach($info_Service->Option()->Get() as $Options)
+		foreach($info_Service as $Options)
 		{
 			if($rowno == $i)
 			{

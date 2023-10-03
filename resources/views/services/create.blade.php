@@ -59,14 +59,14 @@
             <div class="col-md-6">
                <div class="form-group">
                   <label for="provider">Fee</label>
-                  <input type="number" step="0.01" class="form-control" id="fee" name="fee" placeholder="Fee" required value="{{ old('fee') ?? ($info_Service->fee ?? '') }}">
+                  <input type="number" step="0.01" class="form-control" id="fee" name="fee" placeholder="Fee" value="{{ old('fee') ?? ($info_Service->fee ?? '') }}">
                </div>
                <div class="form-group">
                   <label for="options">Service Options</label>
-                  <select class="form-control select2" multiple="multiple" id="options" name="options[]" required>
+                  <select class="form-control select2" id="option_id" name="option_id" required>
                      @foreach(App\Models\Option::ALL() as $Option)
                      @if($isEdit)
-                     <option {{ $info_Service->Option()->Where('option_id',$Option->id)->First() ? 'selected' : '' }} value="{{ $Option->id }}">{{ $Option->name }}</option>
+                     <option {{ $info_Service->option_id==$Option->id ? 'selected' : '' }} value="{{ $Option->id }}">{{ $Option->name }}</option>
                      @else
                      <option value="{{ $Option->id }}">{{ $Option->name }}</option>
                      @endif

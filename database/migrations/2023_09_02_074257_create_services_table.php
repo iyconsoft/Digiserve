@@ -19,8 +19,10 @@ class CreateServicesTable extends Migration
 			$table->string('provider');
 			$table->char('notification_type',1);
 			$table->string('format');
-			$table->float('fee');
 			$table->char('status',1);
+			$table->unsignedBigInteger('option_id')->nullable();
+			$table->foreign('option_id')->references('id')->on('options');
+			$table->float('fee')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,6 @@ class Service extends Model
  	
 	public function Option() 
 	{
-		return $this->belongsToMany('App\Models\Option' , 'service_options');
+		return $this->hasOne('App\Models\Option' , 'id', 'option_id');
 	}
 }

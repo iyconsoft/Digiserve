@@ -32,7 +32,7 @@ class ServiceController extends Controller
 			}
 			
 			$Query = "SELECT provider, name,
-(select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options,
+(select name from options where id = option_id) as options,
 CASE 
 	when notification_type=1 THEN 'Weekly' 
 	when notification_type=2 THEN 'Biweekly' 
@@ -87,7 +87,7 @@ FROM services
 				$Where .= ' and services.provider like "%'.$request->provider.'%"';
 			}
 			$Query = "SELECT id, provider, name,
-(select GROUP_CONCAT(name) from options left join service_options on (service_options.option_id=options.id) where service_options.service_id=services.id) as options,
+(select name from options where id = option_id) as options,
 CASE 
 	when notification_type=1 THEN 'Weekly' 
 	when notification_type=2 THEN 'Biweekly' 
@@ -137,19 +137,15 @@ FROM services
 	
 	public function store(Request $request)
     {
-        $request->validate([
-			  'name' => 'required|unique:services,name',
-		]);
 		$db_Service = new Service;
 		$db_Service->name = $request->name;
 		$db_Service->provider = $request->provider;
 		$db_Service->notification_type = $request->notification_type;
 		$db_Service->fee = $request->fee;
+		$db_Service->option_id = $request->option_id;
 		$db_Service->format = $request->format;
 		$db_Service->status = (isset($request->status) ? '1' : '0');
 		$db_Service->save();
-		
-		$db_Service->Option()->Sync($request->options);
 		
 		return Redirect('/services/');
     }
@@ -164,19 +160,15 @@ FROM services
 	
 	public function update(Service $service, Request $request)
     {
-        $request->validate([
-			  'name' => 'required|unique:services,name,'.$service->id,
-		]);
 		$service->name = $request->name;
 		$service->provider = $request->provider;
 		$service->notification_type = $request->notification_type;
-		$db_Service->fee = $request->fee;
+		$service->fee = $request->fee;
+		$service->option_id = $request->option_id;
 		$service->format = $request->format;
 		$service->status = (isset($request->status) ? '1' : '0');
 		$service->save();
-		
-		$service->Option()->Sync($request->options);
-		
+				
 		return Redirect('/services/');
     }
 	
